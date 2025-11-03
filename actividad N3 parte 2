@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "tm1637.h"
+
+int main() {
+    stdio_init_all();
+    TM1637_init(2, 3);
+    TM1637_set_brightness(4);
+
+    int contador = 0;
+
+    while (true) {
+        
+        TM1637_display(contador, false);  
+        
+        printf("Contador: %d\n", contador);
+
+        sleep_ms(10);
+
+        contador++;
+        if (contador > 9999) {
+            contador = 0; // 
+        }
+    }
+}

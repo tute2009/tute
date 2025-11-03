@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <string.h>
+#include "pico/stdlib.h"
+#include "tm1637.h"
+
+uint8_t letra_O = 0x3F;  
+uint8_t letra_C = 0x39;  
+uint8_t letra_T = 0x6E;  
+uint8_t letra_A = 0x77;  
+uint8_t letra_V = 0x6F;  
+uint8_t letra_I = 0x1E;  
+
+// Nombre a mostrar
+const char* nombre = "Mateo";
+int longitud_nombre;
+
+uint8_t obtener_segmentos(char letra) {
+    switch (letra) {
+        case 'O': return letra_O;
+        case 'C': return letra_C;
+        case 'T': return letra_T;
+        case 'A': return letra_A;
+        case 'V': return letra_V;
+        case 'I': return letra_I;
+        default: return 0x00;  // Representación de espacio en blanco
+    }
+}
+
+void mostrar_nombre(const char* nombre, int pos) {
+    uint8_t display_data[4];  // Almacenamos los datos para los 4 dígitos
+
+    // Prepara los 4 caracteres a mostrar
+    for (int i = 0; i < 4; i++) {
+        int index = pos + i;
+        if (nombre[index] == '\0') {
+            display_data[i] = 0x00;  // Espacio vacío
+        } else {
+            display_data[i] = obtener_segmentos(nombre[index]);
+        }
+    }
+
+}
+
+int main() {
+    stdio_init_all();
+    TM1637_init(2, 3);  // Inicializa el display en los pines 2 y 3
+    TM1637_set_brightness(4);  // Establece el brillo del display
+
+    longitud_nombre = strlen(nombre);  // Calcula la longitud del nombre
+
+    int pos = 0;  // Comienza desde la posición 0
+    char name[] = "Mateo    ";
+
+    while (true) {
+        for(uint32_t i = 0; i < 8; i++) {
+
+            char aux[4] = {0};
+            for(uint32_t j = 0; j < 4; j++) {
+
+                aux[j] = name[i + j];
+            };
+            TM1637_display_word (aux, false);
+            sleep_ms(500);
+        };
+    }
+
+    return 0;
+}
